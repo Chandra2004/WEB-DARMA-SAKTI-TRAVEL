@@ -202,23 +202,43 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <style>
-        /* Paksa warna teks input agar tetap hitam dan terlihat */
-        .flatpickr-input, .form-control {
-            color: #333 !important;
-            opacity: 1 !important;
+        /* 1. Paksa warna teks dan transparansi agar terlihat jelas */
+        .flatpickr-input, 
+        .form-control, 
+        input.custom-datepicker {
+            color: #000000 !important; /* Paksa hitam pekat */
+            -webkit-text-fill-color: #000000 !important; /* Khusus Safari/iOS */
+            opacity: 1 !important; 
+            background-color: #ffffff !important;
         }
-        /* Warna teks saat input di-focus */
-        .flatpickr-input:focus {
+    
+        /* 2. Menghilangkan styling bawaan iOS (Safari) */
+        input {
+            -webkit-appearance: none;
+            appearance: none;
+        }
+    
+        /* 3. Warna teks saat input di-focus */
+        .flatpickr-input:focus, 
+        .form-control:focus {
             color: #000 !important;
+            -webkit-text-fill-color: #000000 !important;
+        }
+    
+        /* 4. Khusus untuk placeholder agar tidak ikut hitam pekat jika ingin dibedakan */
+        .form-control::placeholder {
+            color: #999 !important;
+            -webkit-text-fill-color: #999 !important;
+            opacity: 1;
         }
     </style>
-
+    
     <script>
         const dateConfig = {
             dateFormat: "d/m/Y",
             allowInput: true,
-            // Kita matikan altInput agar tidak membuat elemen baru yang menimpa style Anda
-            altInput: false, 
+            altInput: false,
+            disableMobile: "true"
         };
 
         flatpickr("#book_pick_date", dateConfig);

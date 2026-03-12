@@ -20,7 +20,7 @@
         <div class="container">
             <div class="row no-gutters">
                 <div class="col-md-6 p-md-5 img img-2 d-flex justify-content-center align-items-center"
-                    style="background-image: url('{{ url('/assets/internal/navbar-icon.png') }}');">
+                    style="background-image: url('{{ url('/assets/internal/navbar-icon.png') }}'); background-size: contain !important; background-repeat: no-repeat; height: 300px;">
                 </div>
                 <div class="col-md-6 wrap-about ftco-animate">
                     <div class="heading-section pl-md-5">

@@ -8208,6 +8208,16 @@ h1, h2, h3, h4, h5,
   background-size: cover;
   background-repeat: no-repeat;
   background-position: top center; }
+  /* .hero-wrap {
+    width: 100%;
+    height: 850px;
+    position: inherit;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center; 
+  } */
+  
+
   .hero-wrap .overlay {
     position: absolute;
     top: 0;
@@ -8598,7 +8608,9 @@ h1, h2, h3, h4, h5,
   margin-bottom: 40px; }
   .car-wrap .img {
     width: 100%;
-    height: 200px; }
+    /* height: 200px;  */
+    aspect-ratio: 4 / 5;
+  }
   .car-wrap .price-wrap {
     padding: 10px;
     position: relative;
@@ -8656,7 +8668,10 @@ h1, h2, h3, h4, h5,
 .car-details .img {
   width: 100%;
   height: 600px;
-  margin-bottom: 40px; }
+  margin-bottom: 40px; 
+  background-size: cover;
+  background-position: center center;
+}
 
 .car-details span.subheading {
   font-size: 12px;

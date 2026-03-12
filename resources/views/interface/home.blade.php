@@ -11,7 +11,7 @@
                         <h1 class="mb-4">Sekarang <span>lebih mudah untuk kamu</span> <span>menyewa mobil</span></h1>
                         <p style="font-size: 18px;">Destinasi Terbaik di Seluruh Indonesia Jelajahi, nikmati, dan temukan
                             pengalaman baru. Tour dan travel antar kota di seluruh Indonesia dengan Darma Sakti Travel.</p>
-                        <a href="https://www.youtube.com/watch?v=r0MIYoDlfp0"
+                        {{-- <a href="https://www.youtube.com/watch?v=r0MIYoDlfp0"
                             class="icon-wrap d-flex align-items-center mt-4 justify-content-center" data-toggle="modal"
                             data-target="#videoModal">
                             <div class="icon d-flex align-items-center justify-content-center">
@@ -20,7 +20,7 @@
                             <div class="heading-title ml-5">
                                 <span>Cara mudah untuk menyewa mobil</span>
                             </div>
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
             </div>
@@ -51,8 +51,7 @@
                                     <label for="model" class="label text-white-50">Model Mobil</label>
                                     <select required name="model" id="model" class="form-control rounded-lg p-3"
                                         style="background: #ffffff !important; border: none; color: #333 !important; border-radius: 10px !important;">
-                                        <option value="" disabled selected class="text-muted">Pilih Mobil Impian
-                                        </option>
+                                        <option value="" disabled selected class="text-muted">Pilih Mobil</option>
                                         @foreach ($cars as $mobil)
                                             <option value="{{ $mobil['uid'] }}"
                                                 class="text-dark">
@@ -81,32 +80,12 @@
                                     </div>
                                 </div>
 
-                                {{-- <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="book_pick_date" class="label text-white-50">Tgl Mulai</label>
-                                            <input required name="tanggalAwal" type="text"
-                                                class="form-control rounded-lg p-3" id="book_pick_date"
-                                                placeholder="Tanggal"
-                                                style="background: #ffffff !important; border: none; color: #333 !important; border-radius: 10px !important;">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="book_off_date" class="label text-white-50">Tgl Selesai</label>
-                                            <input required name="tanggalAkhir" type="text"
-                                                class="form-control rounded-lg p-3" id="book_off_date" placeholder="Tanggal"
-                                                style="background: #ffffff !important; border: none; color: #333 !important; border-radius: 10px !important;">
-                                        </div>
-                                    </div>
-                                </div> --}}
-
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="book_pick_date" class="label text-white-50">Tgl Mulai</label>
                                             <input required name="tanggalAwal" type="text"
-                                                class="form-control rounded-lg p-3 custom-datepicker" id="book_pick_date"
+                                                class="form-control rounded-lg p-3 custom-datepicker bg-white" id="book_pick_date"
                                                 placeholder="DD/MM/YYYY" autocomplete="off"
                                                 style="background: #ffffff !important; border: none; color: #333 !important; border-radius: 10px !important;">
                                         </div>
@@ -115,7 +94,7 @@
                                         <div class="form-group">
                                             <label for="book_off_date" class="label text-white-50">Tgl Selesai</label>
                                             <input required name="tanggalAkhir" type="text"
-                                                class="form-control rounded-lg p-3 custom-datepicker" id="book_off_date" 
+                                                class="form-control rounded-lg p-3 custom-datepicker bg-white" id="book_off_date" 
                                                 placeholder="DD/MM/YYYY" autocomplete="off"
                                                 style="background: #ffffff !important; border: none; color: #333 !important; border-radius: 10px !important;">
                                         </div>

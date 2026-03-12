@@ -17,7 +17,7 @@ class Seeder_2026_01_30_130513_CarsSeeder extends Seeder
         $data = [
             [
                 'uid' => Helper::uuid(),
-                'photo' => '06-Toyota-HiAce-Premio.jpg',
+                'photo' => 'premio.webp',
                 'nama_mobil' => 'Hiace Premio Luxury',
                 'slug_mobil' => Helper::slugify('Toyota HiAce Premio Luxury'),
                 'merk_mobil' => 'Toyota',
@@ -36,7 +36,7 @@ class Seeder_2026_01_30_130513_CarsSeeder extends Seeder
             ],
             [
                 'uid' => Helper::uuid(),
-                'photo' => '01-Toyota-HiAce-Commuter-Putih.jpg',
+                'photo' => 'commuter.webp',
                 'nama_mobil' => 'Hiace Commuter',
                 'slug_mobil' => Helper::slugify('Toyota HiAce Commuter'),
                 'merk_mobil' => 'Toyota',
@@ -61,7 +61,7 @@ class Seeder_2026_01_30_130513_CarsSeeder extends Seeder
             ],
             [
                 'uid' => Helper::uuid(),
-                'photo' => '03-Toyota-Innova-Reborn.jpg',
+                'photo' => 'innova.webp',
                 'nama_mobil' => 'Innova Reborn',
                 'slug_mobil' => Helper::slugify('Toyota Innova Reborn'),
                 'merk_mobil' => 'Toyota',
@@ -81,7 +81,7 @@ class Seeder_2026_01_30_130513_CarsSeeder extends Seeder
             ],
             [
                 'uid' => Helper::uuid(),
-                'photo' => '09-Isuzu-Elf.jpg',
+                'photo' => 'isuzu-hijau.webp',
                 'nama_mobil' => 'Isuzu Elf Long',
                 'slug_mobil' => Helper::slugify('Isuzu Elf Long'),
                 'merk_mobil' => 'Isuzu',

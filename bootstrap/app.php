@@ -67,8 +67,8 @@ if (php_sapi_name() !== 'cli') {
 
     // Rate Limiting Global
     // Menggunakan Helper::get_client_ip() untuk akurasi lebih baik (Proxy support)
-    $ip = class_exists(Helper::class) ? Helper::get_client_ip() : ($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1');
-    TheFramework\App\RateLimiter::check($ip, 100, 120);
+    // $ip = class_exists(Helper::class) ? Helper::get_client_ip() : ($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1');
+    // TheFramework\App\RateLimiter::check($ip, 100, 120);
 
     CsrfMiddleware::generateToken();
 }

@@ -4,93 +4,94 @@ namespace TheFramework\Http\Controllers\Services;
 
 use TheFramework\App\Router;
 use TheFramework\App\Config;
+use TheFramework\App\Logging;
+use TheFramework\Models\Car;
+use Throwable;
 
 class SitemapController
 {
     /**
      * Generate Sitemap XML automatically based on registered routes.
+     * v2.0 - More robust implementation with full error handling.
      * 
      * @return void
      */
     public function index()
     {
-        $routes = Router::getRouteDefinitions();
+        // Start output buffering to catch any stray output or warnings
+        ob_start();
 
-        // Dapatkan Base URL dari .env atau construct manual
-        $appUrl = Config::get('APP_URL');
-        if (empty($appUrl) || $appUrl === 'http://localhost') {
-            $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
-            $appUrl = $protocol . "://" . $_SERVER['HTTP_HOST'];
-        }
-        $baseUrl = rtrim($appUrl, '/');
+        try {
+            $routes = Router::getRouteDefinitions();
 
-        // Header XML
-        header("Content-Type: application/xml; charset=utf-8");
+            // Dapatkan Base URL dari .env atau construct manual
+            $appUrl = Config::get('APP_URL');
+            if (empty($appUrl) || $appUrl === 'http://localhost') {
+                $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http";
+                $appUrl = $protocol . "://" . $_SERVER['HTTP_HOST'];
+            }
+            $baseUrl = rtrim($appUrl, '/');
 
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
+            $xml = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+            $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL;
 
-        $uniquePaths = [];
+            $uniquePaths = [];
 
-        foreach ($routes as $route) {
-            $path = $route['path'];
+            // --- Static Routes ---
+            foreach ($routes as $route) {
+                $path = $route['path'];
 
-            // 1. Hanya method GET
-            if ($route['method'] !== 'GET') {
-                continue;
+                if ($route['method'] !== 'GET' || str_starts_with($path, '/_system') || str_starts_with($path, '/api') || str_contains($path, '{') || str_contains($path, '(') || str_contains($path, '*') || in_array($path, $uniquePaths)) {
+                    continue;
+                }
+                $uniquePaths[] = $path;
+
+                $xml .= '    <url>' . PHP_EOL;
+                $xml .= '        <loc>' . htmlspecialchars($baseUrl . $path) . '</loc>' . PHP_EOL;
+                $xml .= '        <lastmod>' . date('Y-m-d') . '</lastmod>' . PHP_EOL;
+                $xml .= '        <changefreq>daily</changefreq>' . PHP_EOL;
+                $xml .= '        <priority>' . ($path === '/' ? '1.0' : '0.8') . '</priority>' . PHP_EOL;
+                $xml .= '    </url>' . PHP_EOL;
             }
 
-            // 2. Filter System & API Routes
-            if (str_starts_with($path, '/_system'))
-                continue;
-            if (str_starts_with($path, '/api'))
-                continue;
+            // --- Dynamic Content: Cars ---
+            if (class_exists('\TheFramework\Models\Car')) {
+                $cars = Car::all();
+                foreach ($cars as $car) {
+                    $slug = urlencode($car['slug_mobil']);
+                    $uid = urlencode($car['uid']);
 
-            // 3. Filter Dynamic Routes (Parameter {id}, (.*), dll)
-            // Sitemap otomatis hanya bisa handle static routes.
-            // Untuk dynamic routes (misal /blog/{slug}), user harus buat manual logicnya nanti.
-            if (str_contains($path, '{') || str_contains($path, '}'))
-                continue;
-            if (str_contains($path, '(') || str_contains($path, ')'))
-                continue;
-            if (str_contains($path, '*'))
-                continue;
-
-            // 4. Hindari duplikat
-            if (in_array($path, $uniquePaths)) {
-                continue;
-            }
-            $uniquePaths[] = $path;
-
-            // Generate Entry
-            $xml .= '    <url>' . PHP_EOL;
-            $xml .= '        <loc>' . htmlspecialchars($baseUrl . $path) . '</loc>' . PHP_EOL;
-            $xml .= '        <lastmod>' . date('Y-m-d') . '</lastmod>' . PHP_EOL;
-            $xml .= '        <changefreq>daily</changefreq>' . PHP_EOL;
-            $xml .= '        <priority>' . ($path === '/' ? '1.0' : '0.8') . '</priority>' . PHP_EOL;
-            $xml .= '    </url>' . PHP_EOL;
-        }
-
-        // 5. Dynamic Content: Blog Posts (Contoh Implementasi)
-        if (class_exists('\\TheFramework\\Models\\Post')) {
-            try {
-                $posts = \TheFramework\Models\Post::all();
-                foreach ($posts as $post) {
                     $xml .= '    <url>' . PHP_EOL;
-                    $xml .= '        <loc>' . htmlspecialchars($baseUrl . '/blog/' . ($post->slug ?? $post->id)) . '</loc>' . PHP_EOL;
+                    $xml .= '        <loc>' . htmlspecialchars($baseUrl . '/list-mobil/' . $slug . '/' . $uid) . '</loc>' . PHP_EOL;
                     $xml .= '        <lastmod>' . date('Y-m-d') . '</lastmod>' . PHP_EOL;
                     $xml .= '        <changefreq>weekly</changefreq>' . PHP_EOL;
                     $xml .= '        <priority>0.6</priority>' . PHP_EOL;
                     $xml .= '    </url>' . PHP_EOL;
                 }
-            } catch (\Exception $e) {
-                // Silently skip if table doesn't exist or DB error
             }
+
+            $xml .= '</urlset>';
+
+            // Clean the buffer, throw away any warnings that might have been generated
+            ob_end_clean();
+
+            // Now, it's safe to send headers and output the clean XML
+            header("Content-Type: application/xml; charset=utf-8");
+            echo $xml;
+            exit;
+
+        } catch (Throwable $e) { // Catch ANY error or exception
+            // Clean the buffer from any half-rendered content or fatal error messages
+            ob_end_clean();
+
+            // Log the actual error for debugging purposes
+            Logging::getLogger()->error('Sitemap Generation Failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+
+            // Output a valid but minimal XML to avoid browser errors.
+            // This tells search engines there's a problem without breaking their parsers.
+            header("Content-Type: application/xml; charset=utf-8");
+            echo '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><!-- Sitemap generation failed. Check server logs for details. --></urlset>';
+            exit;
         }
-
-        $xml .= '</urlset>';
-
-        echo $xml;
-        exit;
     }
 }
